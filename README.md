@@ -19,6 +19,7 @@ Easy access from any device
 
 
 ✨ Features
+
 👨‍🎓 Student Module
 
 Secure login using room number and password
@@ -114,7 +115,7 @@ Advanced security implementation
 
 Clone the repository
 
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/deepu-stack/smart-complaint-managanement-system.git
 
 Open project folder
 
