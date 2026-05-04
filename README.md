@@ -1,7 +1,9 @@
 📌 Smart Complaint Management System
+
 A web-based complaint management system designed for hostels and small residential societies. This system replaces traditional manual complaint registers with a digital, real-time, and efficient solution.
 
 🚀 Overview
+
 The Smart Complaint Management System allows students to submit and track complaints, while enabling the admin (warden) to manage, resolve, and monitor issues efficiently.
 
 It ensures:
