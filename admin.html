@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — SmartComplaint</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">🛡️</div>SmartComplaint
+    <span style="font-family:var(--font-body);font-size:.72rem;color:var(--accent2);font-weight:400;margin-left:4px;">Admin Panel</span>
+  </div>
+  <div class="topbar-right">
+    <span class="live-dot hide-sm">Live</span>
+    <div class="user-chip hide-sm">Role: <b>Warden</b></div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <!-- Side Nav -->
+  <nav class="sidenav">
+    <div class="nav-section-label">Complaints</div>
+    <div class="nav-item active" onclick="setFilter('all',this)">
+      <span class="nav-icon">📋</span>All
+      <span class="nav-badge nb-all" id="nb-all">0</span>
+    </div>
+    <div class="nav-section-label">By Status</div>
+    <div class="nav-item" onclick="setFilter('pending',this)">
+      <span class="nav-icon">⏳</span>Pending
+      <span class="nav-badge nb-pending" id="nb-pending">0</span>
+    </div>
+    <div class="nav-item" onclick="setFilter('resolved',this)">
+      <span class="nav-icon">✅</span>Resolved
+      <span class="nav-badge nb-resolved" id="nb-resolved">0</span>
+    </div>
+    <div class="nav-item" onclick="setFilter('rejected',this)">
+      <span class="nav-icon">❌</span>Rejected
+      <span class="nav-badge nb-rejected" id="nb-rejected">0</span>
+    </div>
+    <div class="sidenav-divider"></div>
+    <div class="nav-section-label">By Priority</div>
+    <div class="nav-item" onclick="setFilter('high',this)"><span class="nav-icon">🔴</span>High</div>
+    <div class="nav-item" onclick="setFilter('medium',this)"><span class="nav-icon">🟡</span>Medium</div>
+    <div class="nav-item" onclick="setFilter('low',this)"><span class="nav-icon">🟢</span>Low</div>
+    <div class="sidenav-divider"></div>
+    <div class="nav-section-label">Management</div>
+    <div class="nav-item" onclick="showStudentPanel()"><span class="nav-icon">👥</span>Students</div>
+    <div class="sidenav-footer">
+      <div class="sidenav-divider"></div>
+      <div class="nav-item" onclick="logout()" style="color:var(--danger);">
+        <span class="nav-icon">🚪</span>Logout
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- Complaints Panel -->
+    <div id="complaints-panel">
+      <div class="stats-grid">
+        <div class="stat-card sc-total"    data-icon="📋"><div class="stat-label">Total</div>   <div class="stat-num" id="s-total">0</div></div>
+        <div class="stat-card sc-pending"  data-icon="⏳"><div class="stat-label">Pending</div> <div class="stat-num" id="s-pending">0</div></div>
+        <div class="stat-card sc-resolved" data-icon="✅"><div class="stat-label">Resolved</div><div class="stat-num" id="s-resolved">0</div></div>
+        <div class="stat-card sc-rejected" data-icon="❌"><div class="stat-label">Rejected</div><div class="stat-num" id="s-rejected">0</div></div>
+      </div>
+      <div class="search-filter-bar">
+        <input type="text" id="admin-search" placeholder="🔍  Search by name, room, title, ID..." oninput="renderAdminList()">
+        <select id="admin-cat-filter" onchange="renderAdminList()">
+          <option value="">All Categories</option>
+          <option>🔧 Maintenance</option>
+          <option>🧹 Daily Cleaning</option>
+          <option>💡 Electricity Issue</option>
+          <option>🚰 Water Supply</option>
+          <option>🌐 Internet / WiFi</option>
+          <option>🍽️ Mess / Food Quality</option>
+          <option>🔒 Security Concern</option>
+          <option>🚽 Washroom / Sanitation</option>
+          <option>🌿 Pest Control</option>
+          <option>🧱 Infrastructure Damage</option>
+          <option>🔊 Noise Complaint</option>
+          <option>📦 Other</option>
+        </select>
+      </div>
+      <div class="admin-complaint-list" id="admin-complaint-list">
+        <div class="empty-state"><div class="es-icon">⏳</div><h3>Connecting...</h3><p>Loading complaints from database.</p></div>
+      </div>
+    </div>
+
+    <!-- Student Management Panel -->
+    <div id="student-panel" style="display:none;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+        <div>
+          <h2 style="font-family:var(--font-head);font-size:1.4rem;">Student Management</h2>
+          <p style="color:var(--text-muted);font-size:.84rem;margin-top:4px;">Registered hostel residents. Seed from config.js to Firestore.</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="seedStudentsUI()">⬆️ Seed Students to Database</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadStudentList()">🔄 Refresh</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('reset-pwd-modal')">🔑 Reset Password</button>
+        </div>
+      </div>
+
+      <div class="alert alert-info show" style="margin-bottom:20px;">
+        ℹ️ To add new students: edit <code style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-family:monospace;">js/config.js</code>
+        → <code style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-family:monospace;">STUDENT_SEED_DATA</code>
+        → click "Seed Students to Database". Existing students are never overwritten.
+      </div>
+
+      <div id="student-list">
+        <div class="empty-state"><div class="es-icon">⏳</div><h3>Loading...</h3></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Resolve Modal -->
+<div class="modal-overlay" id="resolve-modal">
+  <div class="modal-box" style="max-width:480px;border-top:3px solid var(--success);">
+    <button class="modal-close" onclick="closeModal('resolve-modal')">✕</button>
+    <h2>Mark as Resolved</h2>
+    <p class="modal-sub">Upload proof photo and add an optional note for the resident.</p>
+    <div class="form-group">
+      <label>Proof Photo <span style="font-weight:400;text-transform:none;color:var(--text-muted)">(recommended, max 5MB)</span></label>
+      <div class="upload-zone">
+        <input type="file" id="r-photo" accept="image/*" onchange="handleResolvePhoto(this)">
+        <div id="r-upload-ph">
+          <div class="upload-icon">📸</div>
+          <p>Upload a photo showing the fix<br><span>Auto-compressed before saving</span></p>
+        </div>
+        <img class="preview-img" id="r-photo-preview" alt="Proof preview">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Note to Resident <span style="font-weight:400;text-transform:none;color:var(--text-muted)">(optional)</span></label>
+      <textarea id="r-note" placeholder="e.g. Plumber visited on 15th. Pipe replaced in Block A." style="min-height:70px;"></textarea>
+    </div>
+    <button class="btn btn-success btn-full" id="resolve-btn" onclick="confirmResolve()">✅ Confirm Resolved</button>
+  </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal-overlay" id="reject-modal">
+  <div class="modal-box" style="max-width:430px;border-top:3px solid var(--danger);">
+    <button class="modal-close" onclick="closeModal('reject-modal')">✕</button>
+    <h2>Reject Complaint</h2>
+    <p class="modal-sub">Provide a reason — the resident will see this message.</p>
+    <div class="form-group">
+      <label>Rejection Reason *</label>
+      <textarea id="rj-reason" placeholder="e.g. Duplicate complaint. / Outside hostel jurisdiction." style="min-height:90px;"></textarea>
+    </div>
+    <button class="btn btn-danger btn-full" id="reject-btn" onclick="confirmReject()">❌ Confirm Rejection</button>
+  </div>
+</div>
+
+<!-- Reset Password Modal -->
+<div class="modal-overlay" id="reset-pwd-modal">
+  <div class="modal-box" style="max-width:420px;border-top:3px solid var(--accent2);">
+    <button class="modal-close" onclick="closeModal('reset-pwd-modal')">✕</button>
+    <h2>Reset Student Password</h2>
+    <p class="modal-sub">Resets password to default and forces student to change it on next login.</p>
+    <div class="alert" id="reset-alert"></div>
+    <div class="form-group">
+      <label>Student Room Number</label>
+      <input type="text" id="reset-room" placeholder="e.g. A-101" style="text-transform:uppercase;">
+    </div>
+    <button class="btn btn-purple btn-full" id="reset-btn" onclick="resetStudentPassword()">🔑 Reset Password</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="js/config.js"></script>
+<script src="js/db.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

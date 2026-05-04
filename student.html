@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal — SmartComplaint</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/student.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand"><div class="brand-icon">📋</div>SmartComplaint</div>
+  <div class="topbar-right">
+    <div class="user-chip hide-sm"><b id="user-name-display">—</b></div>
+    <div class="user-chip hide-sm" style="font-size:.76rem;">🏠 <b id="user-room-display">—</b></div>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+  </div>
+</header>
+<nav class="tab-bar">
+  <button class="tab-btn active" id="tab-submit" onclick="switchTab('submit')">✏️ New Complaint</button>
+  <button class="tab-btn" id="tab-complaints" onclick="switchTab('complaints')">
+    📋 My Complaints <span class="tab-badge" id="complaints-badge" style="display:none"></span>
+  </button>
+</nav>
+
+<!-- Submit Pane -->
+<div id="pane-submit">
+  <div class="student-main">
+    <div class="section-header"><h2>Submit a New Complaint</h2><p>Fill all fields. Your complaint reaches the warden instantly.</p></div>
+    <div class="form-card">
+      <div class="alert" id="submit-alert"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category *</label>
+          <select id="f-category">
+            <option value="">Select a category</option>
+            <option>🔧 Maintenance</option>
+            <option>🧹 Daily Cleaning</option>
+            <option>💡 Electricity Issue</option>
+            <option>🚰 Water Supply</option>
+            <option>🌐 Internet / WiFi</option>
+            <option>🍽️ Mess / Food Quality</option>
+            <option>🔒 Security Concern</option>
+            <option>🚽 Washroom / Sanitation</option>
+            <option>🌿 Pest Control</option>
+            <option>🧱 Infrastructure Damage</option>
+            <option>🔊 Noise Complaint</option>
+            <option>📦 Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Location / Area *</label>
+          <input type="text" id="f-location" placeholder="e.g. Room A-101, Common Room">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Complaint Title *</label>
+        <input type="text" id="f-title" placeholder="e.g. Water tap leaking in bathroom">
+      </div>
+      <div class="form-group">
+        <label>Detailed Description *</label>
+        <textarea id="f-desc" placeholder="Describe the problem — when it started, how severe, any other details." style="min-height:110px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Priority Level</label>
+        <div class="priority-group">
+          <button class="prio-btn sel-low" data-priority="Low" onclick="setPriority('Low')">🟢 Low</button>
+          <button class="prio-btn" data-priority="Medium" onclick="setPriority('Medium')">🟡 Medium</button>
+          <button class="prio-btn" data-priority="High" onclick="setPriority('High')">🔴 High</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Attach a Photo <span style="color:var(--text-muted);font-weight:400;text-transform:none;">(optional, max 5MB — auto-compressed)</span></label>
+        <div class="upload-zone">
+          <input type="file" id="f-photo" accept="image/*" onchange="handlePhotoChange(this)">
+          <div id="upload-ph">
+            <div class="upload-icon">📷</div>
+            <p>Click or drag photo here<br><span>JPG, PNG, WEBP</span></p>
+          </div>
+          <img class="preview-img" id="photo-preview" alt="Preview">
+        </div>
+      </div>
+      <div class="form-submit-row">
+        <p class="hint">Visible to the warden in real-time after submission.</p>
+        <button class="btn btn-primary" id="submit-btn" onclick="submitComplaint()">Submit Complaint →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- My Complaints Pane -->
+<div id="pane-complaints" style="display:none;">
+  <div class="student-main">
+    <div class="section-header"><h2>My Complaints</h2><p>Live view — updates automatically, no refresh needed.</p></div>
+    <div class="status-summary">
+      <div class="ss-pill total"><div><div class="ss-num" id="ss-total">0</div><div class="ss-label">Total</div></div></div>
+      <div class="ss-pill pending"><div><div class="ss-num" id="ss-pending">0</div><div class="ss-label">Pending</div></div></div>
+      <div class="ss-pill resolved"><div><div class="ss-num" id="ss-resolved">0</div><div class="ss-label">Resolved</div></div></div>
+      <div class="ss-pill rejected"><div><div class="ss-num" id="ss-rejected">0</div><div class="ss-label">Rejected</div></div></div>
+    </div>
+    <div class="complaint-list" id="complaint-list">
+      <div class="empty-state"><div class="es-icon">⏳</div><h3>Loading...</h3></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="js/config.js"></script>
+<script src="js/db.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/student.js"></script>
+</body>
+</html>

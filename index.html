@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartComplaint — Hostel</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+<main class="landing-page">
+  <div class="landing-grid page-enter">
+    <div class="hero-section">
+      <div class="hero-eyebrow">Hostel Complaint Portal</div>
+      <h1 class="hero-headline">Smart<br><span class="hl">Complaint</span><br>System</h1>
+      <p class="hero-desc">A real-time, verified complaint portal. Only registered students can log in — no fake complaints possible.</p>
+      <div class="hero-pills">
+        <span class="hero-pill green">🔐 Verified Login</span>
+        <span class="hero-pill blue">☁️ Cloud Synced</span>
+        <span class="hero-pill orange">🔄 Real-time</span>
+        <span class="hero-pill">🔧 Maintenance</span>
+        <span class="hero-pill">🧹 Cleaning</span>
+        <span class="hero-pill">💡 Electricity</span>
+        <span class="hero-pill">🚰 Water</span>
+      </div>
+    </div>
+    <div class="login-panel">
+      <div class="login-card student" onclick="openModal('student-modal')">
+        <div class="lc-header">
+          <div class="lc-icon">🙋‍♂️</div>
+          <div><div class="lc-label">Resident Access</div><div class="lc-title">Student / Resident</div></div>
+        </div>
+        <p class="lc-desc">Log in with your room number and password to submit or track complaints.</p>
+        <span class="lc-arrow">→</span>
+      </div>
+      <div class="login-card admin" onclick="openModal('admin-modal')">
+        <div class="lc-header">
+          <div class="lc-icon">🛡️</div>
+          <div><div class="lc-label">Staff Access</div><div class="lc-title">Warden / Admin</div></div>
+        </div>
+        <p class="lc-desc">Manage all complaints, upload resolution proof, and oversee the hostel dashboard.</p>
+        <span class="lc-arrow">→</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Student Login Modal -->
+<div class="modal-overlay" id="student-modal">
+  <div class="modal-box" style="border-top:3px solid var(--accent);">
+    <button class="modal-close" onclick="closeModal('student-modal')">✕</button>
+    <h2>Student Login</h2>
+    <p class="modal-sub">Use your room number and assigned password.</p>
+
+    <!-- Credential hint table — REMOVE this section after go-live -->
+    <div class="modal-cred-hint">
+      <b>🔑 First time logging in?</b> Use the default password below.<br>
+      You will be asked to set your own password immediately after.
+      <table class="cred-table">
+        <tr><td>Rahul Sharma</td><td>Room: <code>A-101</code></td><td>Pass: <code>Rahul@A101</code></td></tr>
+        <tr><td>Priya Singh</td> <td>Room: <code>B-205</code></td><td>Pass: <code>Priya@B205</code></td></tr>
+        <tr><td>Amit Kumar</td>  <td>Room: <code>A-203</code></td><td>Pass: <code>Amit@A203</code></td></tr>
+        <tr><td>Neha Gupta</td>  <td>Room: <code>C-108</code></td><td>Pass: <code>Neha@C108</code></td></tr>
+        <tr><td>Ravi Patel</td>  <td>Room: <code>D-302</code></td><td>Pass: <code>Ravi@D302</code></td></tr>
+      </table>
+    </div>
+
+    <div class="alert" id="s-err"></div>
+    <div class="form-group">
+      <label>Room Number</label>
+      <input type="text" id="s-room" placeholder="e.g. A-101" autocomplete="username" style="text-transform:uppercase;">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="pwd-wrapper">
+        <input type="password" id="s-pass" placeholder="Your password" autocomplete="current-password">
+        <button class="pwd-toggle" type="button" onclick="togglePwd('s-pass',this)">👁️</button>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" id="s-btn" onclick="doStudentLogin()">Enter Student Portal →</button>
+  </div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal-box" style="border-top:3px solid var(--accent2);">
+    <button class="modal-close" onclick="closeModal('admin-modal')">✕</button>
+    <h2>Admin Login</h2>
+    <p class="modal-sub">Warden / Staff credentials required.</p>
+    <div class="alert" id="a-err"></div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="a-user" value="warden" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="pwd-wrapper">
+        <input type="password" id="a-pass" placeholder="••••••••" autocomplete="current-password">
+        <button class="pwd-toggle" type="button" onclick="togglePwd('a-pass',this)">👁️</button>
+      </div>
+    </div>
+    <p style="font-size:.74rem;color:var(--text-muted);margin-bottom:18px;">Default: <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;">warden / hostel@123</code></p>
+    <button class="btn btn-purple btn-full" id="a-btn" onclick="doAdminLogin()">Enter Admin Panel →</button>
+  </div>
+</div>
+
+<div class="landing-credit">Built for <span>Hostel Complaint Management</span> — College Project</div>
+<div id="toast"></div>
+
+<!-- Firebase (no Storage SDK needed) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="js/config.js"></script>
+<script src="js/db.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  function openModal(id){document.getElementById(id).classList.add('open');}
+  function closeModal(id){document.getElementById(id).classList.remove('open');}
+  document.querySelectorAll('.modal-overlay').forEach(o=>{
+    o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
+  });
+  function togglePwd(id,btn){
+    const inp=document.getElementById(id);
+    inp.type=inp.type==='password'?'text':'password';
+    btn.textContent=inp.type==='password'?'👁️':'🙈';
+  }
+  document.getElementById('s-room').addEventListener('input',function(){this.value=this.value.toUpperCase();});
+  document.getElementById('s-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doStudentLogin();});
+  document.getElementById('a-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doAdminLogin();});
+
+  function doStudentLogin(){
+    const room=document.getElementById('s-room').value.trim().toUpperCase();
+    const pass=document.getElementById('s-pass').value;
+    const err=document.getElementById('s-err');
+    const btn=document.getElementById('s-btn');
+    studentLogin(room,pass,err,btn);
+  }
+  function doAdminLogin(){
+    const user=document.getElementById('a-user').value.trim();
+    const pass=document.getElementById('a-pass').value;
+    const err=document.getElementById('a-err');
+    if(user!==window.ADMIN_CONFIG.username||pass!==window.ADMIN_CONFIG.password){
+      err.textContent='❌ Incorrect username or password.';
+      err.className='alert alert-error show'; return;
+    }
+    err.className='alert';
+    sessionStorage.setItem('admin_session','true');
+    window.location.href='admin.html';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+.tab-bar{display:flex;gap:2px;padding:0 28px;background:var(--surface);border-bottom:1px solid var(--border)}
+.tab-btn{padding:14px 20px;background:none;border:none;color:var(--text-muted);font-family:var(--font-body);font-size:.88rem;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;margin-bottom:-1px;display:flex;align-items:center;gap:7px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-badge{background:var(--accent);color:var(--bg);font-size:.7rem;font-weight:700;padding:1px 7px;border-radius:20px}
+.student-main{max-width:780px;margin:0 auto;padding:36px 28px}
+@media(max-width:600px){.student-main{padding:24px 16px}.tab-bar{padding:0 14px}.tab-btn{padding:12px 12px;font-size:.82rem}}
+.section-header{margin-bottom:26px}
+.section-header h2{font-size:1.45rem;margin-bottom:5px}
+.section-header p{font-size:.85rem;color:var(--text-muted);line-height:1.5}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px}
+.form-submit-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:6px;flex-wrap:wrap}
+.form-submit-row .hint{font-size:.78rem;color:var(--text-muted);line-height:1.5}
+.complaint-list{display:flex;flex-direction:column;gap:14px}
+.status-summary{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.ss-pill{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;flex:1;min-width:80px}
+.ss-pill .ss-num{font-family:var(--font-head);font-size:1.5rem;font-weight:800;line-height:1}
+.ss-pill .ss-label{font-size:.73rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+.ss-pill.pending .ss-num{color:var(--warning)}
+.ss-pill.resolved .ss-num{color:var(--success)}
+.ss-pill.rejected .ss-num{color:var(--danger)}
+.ss-pill.total .ss-num{color:var(--info)}
+.priority-group{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.prio-btn{padding:9px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text-muted);font-family:var(--font-body);font-size:.82rem;font-weight:500;cursor:pointer;text-align:center;transition:all .15s}
+.prio-btn.sel-low{background:rgba(34,197,94,.12);border-color:var(--success);color:var(--success)}
+.prio-btn.sel-medium{background:rgba(234,179,8,.12);border-color:var(--warning);color:var(--warning)}
+.prio-btn.sel-high{background:rgba(239,68,68,.12);border-color:var(--danger);color:var(--danger)}
